@@ -11,7 +11,6 @@ export default function HomePage() {
   const [latestDate, setLatestDate] = useState(null);
 
   useEffect(() => {
-    // 1. Fetch live stories for the stats bar
     fetch("/api/stories")
       .then((r) => r.json())
       .then(({ stories, fetched }) => {
@@ -21,7 +20,6 @@ export default function HomePage() {
       })
       .catch(() => setLoading(false));
 
-    // 2. Set the latest date for the brief link
     const today = new Date().toISOString().split("T")[0];
     setLatestDate(today);
   }, []);
@@ -34,7 +32,7 @@ export default function HomePage() {
 
   return (
     <main className="main">
-      {/* 📊 TOP SIGNAL BAR: Technical data visualization */}
+      {/* 📊 SIGNAL BAR: Formatted as a horizontal grid row */}
       <div className="signal-bar">
         <div className="signal-item">
           <span className="signal-label">STORIES</span>
@@ -51,50 +49,24 @@ export default function HomePage() {
         <div className="signal-item">
           <span className="signal-label">UPDATED</span>
           <span className="signal-value">
-            {fetchedAt ? new Date(fetchedAt).toLocaleTimeString() : "—"}
+            {fetchedAt ? new Date(fetchedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "—"}
           </span>
         </div>
       </div>
 
-      {/* 🚀 SYSTEM COMMANDS: Quick access to Daily Briefs */}
-      <div className="daily-brief-card" style={{ borderLeft: '4px solid var(--green)' }}>
-        <p className="section-heading" style={{ marginBottom: '1rem' }}>SYSTEM COMMANDS</p>
+      {/* 🚀 SYSTEM COMMANDS: Using the new terminal button classes */}
+      <div className="daily-brief-card">
+        <p className="section-heading">SYSTEM COMMANDS</p>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-          <Link 
-            href={`/daily-brief/${latestDate}`}
-            style={{ 
-              padding: '0.8rem', 
-              border: '1px solid var(--green)', 
-              color: 'var(--green)', 
-              textDecoration: 'none',
-              textAlign: 'center',
-              fontSize: '0.75rem',
-              fontFamily: 'var(--mono)',
-              borderRadius: '4px',
-              background: 'rgba(62, 207, 142, 0.05)'
-            }}
-          >
+          <Link href={`/daily-brief/${latestDate}`} className="btn-terminal-run">
             [ RUN ] ./latest_brief.sh
           </Link>
-          <Link 
-            href="/daily-brief"
-            style={{ 
-              padding: '0.8rem', 
-              border: '1px solid var(--border)', 
-              color: 'var(--text-bright)', 
-              textDecoration: 'none',
-              textAlign: 'center',
-              fontSize: '0.75rem',
-              fontFamily: 'var(--mono)',
-              borderRadius: '4px'
-            }}
-          >
+          <Link href="/daily-brief" className="btn-terminal-view">
             [ VIEW ] ./archives
           </Link>
         </div>
       </div>
 
-      {/* 📡 LIVE FEED SECTION */}
       <p className="section-heading">LIVE SIGNAL · TOP NEWS</p>
 
       {loading ? (
@@ -107,10 +79,9 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* 📱 TERMINAL INTERFACE: Floating input bar from the mockup */}
-      <div style={{ height: '100px' }} /> {/* Prevent overlap with last story */}
+      {/* 📱 FLOATING TERMINAL BAR */}
+      <div style={{ height: '100px' }} /> 
       <TerminalBar />
     </main>
   );
-                                               }
-              
+      }
