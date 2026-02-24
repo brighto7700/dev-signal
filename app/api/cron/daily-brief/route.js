@@ -40,11 +40,19 @@ export async function GET(request) {
     const enriched = await enrichWithGitHub(stories);
 
     console.log("Generating AI summary...");
-    // 4. Generate AI summary
-    const summary = await summarizeWithAI(enriched);
+    
+    // 4. Clean up the data so the AI doesn't choke on the raw JSON
+    const cleanPrompt = enriched
+      .map((story, index) => `${index + 1}. ${story.title}`)
+      .join('\n');
+
+    // Send only the clean text to the AI
+    const summary = await summarizeWithAI(
+      `Write a sharp, 3-bullet technical summary of today's top dev news based on these headlines:\n${cleanPrompt}`
+    );
 
     if (!summary) {
-       throw new Error("Gemini returned a null summary.");
+       throw new Error("AI returned a null summary.");
     }
 
     console.log("Saving to Supabase...");
@@ -54,7 +62,7 @@ export async function GET(request) {
       .insert({
         date: today,
         summary,
-        top_stories: enriched,
+        top_stories: enriched, // Still saving the full rich data for the UI
       });
 
     if (insertError) {
@@ -68,4 +76,4 @@ export async function GET(request) {
     console.error("Cron Job Failed:", err.message);
     return Response.json({ error: err.message }, { status: 500 });
   }
-                                                  }
+}
