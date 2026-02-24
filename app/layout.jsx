@@ -2,28 +2,17 @@ import "./globals.css";
 import Script from 'next/script';
 
 export const metadata = {
-  title: "The Dev Signal — Real-Time Tech Dashboard for Developers",
-  description: "A sharp, terminal-style dashboard tracking Hacker News and GitHub. Get AI-generated technical takeaways and live project health stats.",
-  openGraph: {
-    title: "The Dev Signal",
-    description: "Real-time tech trends, GitHub health, and AI-powered dev insights.",
-    url: "https://dev-signal.vercel.app",
-    siteName: "The Dev Signal",
-    type: "website",
-    images: [
-      {
-        url: "https://dev-signal.vercel.app/og-main.png", 
-        width: 1200,
-        height: 630,
-        alt: "The Dev Signal Dashboard Preview",
-      },
-    ],
+  title: "DevTerminal — Real-Time Developer Signal & AI Daily Brief",
+  description: "A sharp, terminal-style dashboard for senior developers. Live HN/GitHub trends and AI-powered technical takeaways.",
+  alternates: {
+    canonical: 'https://devterminal.vercel.app', // Update this to your new Vercel URL
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "The Dev Signal",
-    description: "The developer's real-time signal in the noise.",
-    images: ["https://dev-signal.vercel.app/og-main.png"],
+  openGraph: {
+    title: "DevTerminal",
+    description: "The technical signal in the noise.",
+    url: "https://devterminal.vercel.app",
+    siteName: "DevTerminal",
+    images: [{ url: "/og-main.png" }],
   },
 };
 
@@ -32,7 +21,7 @@ export default function RootLayout({ children }) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    "headline": "The Dev Signal — Real-Time Tech Dashboard",
+    "headline": "The DevTerminal — Real-Time Tech Dashboard",
     "description": "A terminal-style dashboard for developers tracking Hacker News and GitHub.",
     "author": {
       "@type": "Person",
@@ -40,10 +29,10 @@ export default function RootLayout({ children }) {
     },
     "publisher": {
       "@type": "Organization",
-      "name": "The Dev Signal",
+      "name": "DevTerminal",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://dev-signal.vercel.app/og-main.png"
+        "url": "https://devterminal.vercel.app/og-main.png"
       }
     }
   };
