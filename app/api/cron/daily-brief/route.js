@@ -1,6 +1,6 @@
 import { getTopStories } from "@/lib/hackernews";
 import { enrichWithGitHub } from "@/lib/github";
-import { generateDailyBrief } from "@/lib/ai";
+import { summarizeWithAI } from "@/lib/ai";
 import { supabaseAdmin } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
@@ -41,7 +41,7 @@ export async function GET(request) {
 
     console.log("Generating AI summary...");
     // 4. Generate AI summary
-    const summary = await generateDailyBrief(enriched);
+    const summary = await summarizeWithAI(enriched);
 
     if (!summary) {
        throw new Error("Gemini returned a null summary.");
