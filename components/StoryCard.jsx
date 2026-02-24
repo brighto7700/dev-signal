@@ -1,19 +1,18 @@
 "use client";
 import { useState } from "react";
 
+// Helper functions kept for logic
 function timeAgo(unixTime) {
   const diff = Date.now() / 1000 - unixTime;
-  if (diff < 3600) return `${Math.round(diff / 60)}m ago`;
-  if (diff < 86400) return `${Math.round(diff / 3600)}h ago`;
-  return `${Math.round(diff / 86400)}d ago`;
+  if (diff < 3600) return `${Math.round(diff / 60)}m`;
+  if (diff < 86400) return `${Math.round(diff / 3600)}h`;
+  return `${Math.round(diff / 86400)}d`;
 }
 
 function getDomain(url) {
   try {
     return new URL(url).hostname.replace("www.", "");
-  } catch {
-    return url;
-  }
+  } catch { return url; }
 }
 
 export default function StoryCard({ story, index }) {
@@ -21,42 +20,49 @@ export default function StoryCard({ story, index }) {
 
   return (
     <article className="story-card">
-      <div className="story-rank">{String(index + 1).padStart(2, "0")}</div>
       <div className="story-body">
+        {/* Title: High contrast for readability */}
         <a href={story.url} target="_blank" rel="noopener noreferrer" className="story-title">
           {story.title}
         </a>
+
+        {/* Metadata Row: Simplified dots and muted text */}
         <div className="story-meta">
           <span className="story-domain">{getDomain(story.url)}</span>
-          <span className="dot">·</span>
-          <span>▲ {story.score}</span>
-          <span className="dot">·</span>
-          <span>{story.descendants} comments</span>
-          <span className="dot">·</span>
-          <span>{timeAgo(story.time)}</span>
-          <span className="dot">·</span>
+          <span className="dot">•</span>
+          <span>{story.score} pts</span>
+          <span className="dot">•</span>
+          <span>{timeAgo(story.time)} ago</span>
+          <span className="dot">•</span>
           <a href={story.hnUrl} target="_blank" rel="noopener noreferrer" className="hn-link">
-            discuss
+            {story.descendants} comments
           </a>
         </div>
 
+        {/* Dev Health: Modular pill design from mockup */}
         {story.github && (
           <div className="dev-health">
             <span className="health-label">DEV HEALTH</span>
             <span>★ {story.github.stars?.toLocaleString()}</span>
-            <span>⑂ {story.github.forks?.toLocaleString()}</span>
-            <span>! {story.github.openIssues} issues</span>
+            <span>! {story.github.openIssues}</span>
             <span>⏱ {story.github.lastCommit}</span>
           </div>
         )}
 
+        {/* Key Takeaways: Terminal-style dropdown */}
         {story.summary && (
-          <div className="summary">
-            <button className="summary-toggle" onClick={() => setExpanded(!expanded)}>
-              {expanded ? "▼" : "▶"} KEY TAKEAWAYS
+          <div className="summary" style={{ marginTop: '12px' }}>
+            <button 
+              className="summary-toggle" 
+              onClick={() => setExpanded(!expanded)}
+              style={{ color: expanded ? 'var(--amber)' : 'var(--text-dim)' }}
+            >
+              {expanded ? "[ - ]" : "[ + ]"} TAKEAWAYS
             </button>
             {expanded && (
-              <pre className="summary-text">{story.summary}</pre>
+              <div className="summary-text" style={{ borderLeft: '1px solid var(--amber)' }}>
+                {story.summary}
+              </div>
             )}
           </div>
         )}
@@ -64,3 +70,4 @@ export default function StoryCard({ story, index }) {
     </article>
   );
             }
+                      
