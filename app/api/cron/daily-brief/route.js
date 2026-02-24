@@ -1,6 +1,6 @@
 import { getTopStories } from "@/lib/hackernews";
 import { enrichWithGitHub } from "@/lib/github";
-import { generateDailyBrief } from "@/lib/gemini";
+import { generateDailyBrief } from "@/lib/ai";
 import { supabaseAdmin } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
