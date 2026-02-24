@@ -5,7 +5,7 @@ export const metadata = {
   title: "DevTerminal — Real-Time Developer Signal & AI Daily Brief",
   description: "A sharp, terminal-style dashboard for senior developers. Live HN/GitHub trends and AI-powered technical takeaways.",
   alternates: {
-    canonical: 'https://devterminal.vercel.app', // Update this to your new Vercel URL
+    canonical: 'https://devterminal.vercel.app', 
   },
   openGraph: {
     title: "DevTerminal",
@@ -14,18 +14,23 @@ export const metadata = {
     siteName: "DevTerminal",
     images: [{ url: "/og-main.png" }],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "DevTerminal",
+    description: "Real-time technical signal for developers.",
+    images: ["https://devterminal.vercel.app/og-main.png"],
+  },
 };
 
 export default function RootLayout({ children }) {
-  // Define Schema.org data
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    "headline": "The DevTerminal — Real-Time Tech Dashboard",
+    "headline": "DevTerminal — Real-Time Tech Dashboard",
     "description": "A terminal-style dashboard for developers tracking Hacker News and GitHub.",
     "author": {
       "@type": "Person",
-      "name": "Brighto G" // Your professional handle
+      "name": "Brighto G"
     },
     "publisher": {
       "@type": "Organization",
@@ -54,7 +59,6 @@ export default function RootLayout({ children }) {
         </Script>
       </head>
       <body>
-        {/* Inject Structured Data for SEO */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -62,7 +66,7 @@ export default function RootLayout({ children }) {
 
         <header className="site-header">
           <a href="/" className="logo">
-            THE DEV<span>/</span>SIGNAL
+            DEV<span>/</span>TERMINAL
           </a>
           <nav className="site-nav">
             <a href="/">FEED</a>
@@ -78,7 +82,7 @@ export default function RootLayout({ children }) {
 
         <footer className="site-footer">
           <p>
-            THE DEV SIGNAL · Data from{" "}
+            DEV TERMINAL · Data from{" "}
             <a href="https://news.ycombinator.com" target="_blank" rel="noopener">
               Hacker News
             </a>{" "}
@@ -92,4 +96,4 @@ export default function RootLayout({ children }) {
       </body>
     </html>
   );
-}
+            }
