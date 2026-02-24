@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-export default function TerminalBar() {
+export default function TerminalBar({ onResult }) {
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -18,8 +18,7 @@ export default function TerminalBar() {
       const data = await res.json();
       
       if (data.command) {
-        // Alert is just for testing; you can later output this to a terminal UI
-        alert(`Generated Command:\n\n${data.command}`);
+        onResult(data.command); // Pass the command up to the Page
         setPrompt("");
       }
     } catch (err) {
@@ -36,28 +35,13 @@ export default function TerminalBar() {
         <input
           type="text"
           className="terminal-input"
-          placeholder={loading ? "WORKING..." : "ask for a script..."}
+          placeholder={loading ? "COMPILING..." : "ask for a script..."}
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           disabled={loading}
-          autoFocus
         />
-        <button 
-          type="submit" 
-          style={{ 
-            background: 'none', 
-            border: 'none', 
-            color: 'var(--green)', 
-            fontFamily: 'var(--mono)', 
-            fontSize: '0.7rem', 
-            cursor: 'pointer',
-            opacity: loading ? 0.5 : 1
-          }}
-        >
-          [GENERATE]
-        </button>
+        <button type="submit" style={{ display: 'none' }} />
       </form>
     </div>
   );
-            }
-      
+}
