@@ -3,6 +3,7 @@ import Script from 'next/script';
 
 export const metadata = {
   title: "ShellSignal — Terminal-Style Dev Dashboard & AI Brief",
+  metadataBase: new URL('https://shellsignal.vercel.app'), // ADD THIS LINE
   description: "A sharp, terminal-style dashboard for senior developers. Real-time HN/GitHub trends and AI-powered technical takeaways.",
   alternates: {
     canonical: 'https://shellsignal.vercel.app', 
