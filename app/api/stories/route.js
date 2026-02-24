@@ -1,7 +1,7 @@
 import { getTopStories } from "@/lib/hackernews";
 import { enrichWithGitHub } from "@/lib/github";
 import { supabaseAdmin } from "@/lib/supabase";
-import { summarizeStory } from "@/lib/gemini"; // 1. ADD THIS IMPORT
+import { summarizeWithAI } from "@/lib/ai"; // 1. ADD THIS IMPORT
 
 export const revalidate = 300;
 
@@ -14,7 +14,7 @@ export async function GET() {
     const withSummaries = await Promise.all(
       enriched.map(async (story, index) => {
         if (index < 5) {
-          const summary = await summarizeStory(story.title, story.url);
+          const summary = await summarizeWithAI(story.title, story.url);
           return { ...story, summary };
         }
         return story;
