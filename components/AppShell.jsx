@@ -18,18 +18,29 @@ export default function AppShell({ children }) {
 
     setGenerating(true);
     setGeneratedScript(""); 
+    console.log("Sending prompt to OpenRouter via API:", prompt);
+
     try {
       const res = await fetch("/api/generate", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),
       });
+
+      if (!res.ok) throw new Error(`Server responded with ${res.status}`);
+
       const data = await res.json();
+      console.log("API Response received:", data);
+
       if (data.command) {
         setGeneratedScript(data.command);
         setPrompt("");
+      } else if (data.error) {
+        alert("API Error: " + data.error);
       }
     } catch (err) {
-      console.error("OpenRouter API Failed");
+      console.error("Fetch failed:", err);
+      alert("Terminal link lost. Check console for details.");
     } finally {
       setGenerating(false);
     }
@@ -56,17 +67,10 @@ export default function AppShell({ children }) {
             <li>API_LIMIT: <span style={{ color: 'var(--text-bright)' }}>84% REMAINING</span></li>
             <li>THEME: <span style={{ color: 'var(--green)' }}>MATRIX_NIGHT</span></li>
           </ul>
-          <button style={{
-            width: '100%', marginTop: '1rem', padding: '8px', background: '#000',
-            border: '1px dashed var(--text-dim)', color: 'var(--text-bright)',
-            fontFamily: 'var(--mono)', fontSize: '0.7rem', cursor: 'pointer'
-          }}>
-            &gt; CONFIGURE API KEYS
-          </button>
         </div>
       )}
 
-      {/* SCRIPT OUTPUT WINDOW */}
+      {/* SCRIPT OUTPUT WINDOW (Matching Mockup Colors) */}
       {generatedScript && (
         <div className="output-window">
           <div className="output-header">
@@ -91,15 +95,15 @@ export default function AppShell({ children }) {
         </div>
         <div className="date-line">{today}</div>
 
-        {/* DYNAMIC TABS (Auto-highlights based on the current page) */}
+        {/* TABS */}
         <div className="tabs">
           <Link href="/" className={`tab ${pathname === '/' ? 'active' : ''}`}>HOME</Link>
           <Link href="/daily-brief" className={`tab ${pathname?.startsWith('/daily-brief') ? 'active' : ''}`}>ARCHIVE</Link>
-          <div className="tab-scripts">SCRIPTS</div>
+          <div className="tab-scripts" style={{color: 'var(--text-dim)'}}>SCRIPTS</div>
           <div className="tab-icon">⬡</div>
         </div>
 
-        {/* THIS IS WHERE INDIVIDUAL PAGES RENDER */}
+        {/* THIS IS WHERE THE PAGE CONTENT RENDER */}
         {children}
       </div>
 
@@ -123,5 +127,5 @@ export default function AppShell({ children }) {
       </form>
     </div>
   );
-      }
-          
+        }
+            
