@@ -1,5 +1,6 @@
 import "./globals.css";
 import Script from 'next/script';
+import AppShell from '@/components/AppShell'; // <-- ADD THIS IMPORT
 
 export const metadata = {
   title: "ShellSignal — Terminal-Style Dev Dashboard & AI Brief",
@@ -64,13 +65,11 @@ export default function RootLayout({ children }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-
-        {/* The ghost UI (header/footer) is gone so the new design can shine, 
-          but all your analytics and schema markup stay intact! 
-        */}
-        {children}
-
+        {/* WRAP THE CHILDREN IN THE NEW APP SHELL */}
+        <AppShell>
+          {children}
+        </AppShell>
       </body>
     </html>
   );
-}
+      }
