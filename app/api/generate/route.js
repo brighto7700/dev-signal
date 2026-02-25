@@ -12,46 +12,43 @@ export async function POST(req) {
         "HTTP-Referer": "https://shellsignal.vercel.app",
       },
       body: JSON.stringify({
-        // This is a reliable free model that won't trigger 402/Credit errors
-        model: "huggingfaceh4/zephyr-7b-beta:free", 
+        // This is the specific model ID for the free tier of Gemini 2.0
+        model: "google/gemini-2.0-flash-001", 
         messages: [
           {
             role: "system",
-            content: "You are a shell script generator. Return ONLY the raw bash command. No markdown backticks. No explanation."
+            content: "You are a bash script generator. Return ONLY raw code. No markdown. No text."
           },
           {
             role: "user",
             content: prompt
           }
         ],
-        // Force the lowest possible token footprint
-        max_tokens: 100,
-        temperature: 0.1
+        max_tokens: 150,
+        temperature: 0.1,
+        top_p: 0.9
       })
     });
 
     const data = await response.json();
 
-    // Check if OpenRouter specifically rejected it for credits again
-    if (data.error && data.error.code === 402) {
-      return NextResponse.json({ command: "# Error: OpenRouter account needs credits even for free models. Try a different API key." });
-    }
-
-    if (!data.choices || !data.choices[0]) {
-      console.error("OpenRouter Empty Response:", data);
-      return NextResponse.json({ error: "No response from AI" }, { status: 500 });
+    // If we still get a credit error, return a helpful message in the UI
+    if (data.error) {
+      console.error("OpenRouter detailed error:", data.error);
+      return NextResponse.json({ 
+        command: `# API Error: ${data.error.message || "Insufficient Credits"}` 
+      });
     }
 
     let command = data.choices[0].message.content.trim();
     
-    // Clean up any accidental markdown backticks
+    // Final cleanup of any rogue markdown backticks
     command = command.replace(/^```(bash|sh)?\n?/i, '').replace(/```$/i, '').trim();
 
     return NextResponse.json({ command });
 
   } catch (error) {
-    console.error("Critical API Failure:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    console.error("Vercel Function Error:", error);
+    return NextResponse.json({ error: "Check Vercel Logs" }, { status: 500 });
   }
-}
-  
+      }
