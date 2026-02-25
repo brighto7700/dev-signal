@@ -82,12 +82,13 @@ export default function HomePage() {
               <span className="snippet-icon">📁</span>
               <span className="snippet-title-text">Daily Snippet</span>
             </div>
+            {/* THE FIX: Wrapped the weird characters in JSX safe string literals */}
             <div className="snippet-body">
-              <span className="c-amber">((&lt;echo "AI Summary:\n m#sh:}:)</span><br/>
-              &nbsp;&nbsp;<span className="c-blue">$(docker stats --no-stream --format</span> <span className="c-amber">"table {"{"}{"{"}.Name{"}"}{"}"}\t{"{"}n{"}"})</span><br/>
-              &nbsp;&nbsp;<span className="c-dim">;demo@stta=-]</span><br/>
-              &nbsp;&nbsp;<span className="c-dim">;MemUsage{"}"}{"}"}&gt;"(krxeonlc)</span><br/>
-              <span className="c-dim">d.ckp&gt;)</span>
+              <span className="c-amber">{"((<echo \"AI Summary:\\n m#sh:}:)"}</span><br/>
+              &nbsp;&nbsp;<span className="c-blue">{"$(docker stats --no-stream --format"}</span> <span className="c-amber">{"\"table {{.Name}}\\t{n})"}</span><br/>
+              &nbsp;&nbsp;<span className="c-dim">{";demo@stta=-]"}</span><br/>
+              &nbsp;&nbsp;<span className="c-dim">{";MemUsage}}>\"(krxeonlc)"}</span><br/>
+              <span className="c-dim">{"d.ckp>)"}</span>
             </div>
           </div>
         </div>
@@ -167,4 +168,4 @@ export default function HomePage() {
     </div>
   );
         }
-                        
+            
