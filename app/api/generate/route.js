@@ -9,37 +9,49 @@ export async function POST(req) {
       headers: {
         "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
         "Content-Type": "application/json",
+        "HTTP-Referer": "https://shellsignal.vercel.app",
       },
       body: JSON.stringify({
-        // SWITCH TO A PERMANENTLY FREE MODEL
-        model: "google/gemini-2.0-flash-exp:free", 
+        // This is a reliable free model that won't trigger 402/Credit errors
+        model: "huggingfaceh4/zephyr-7b-beta:free", 
         messages: [
           {
             role: "system",
-            content: "Return ONLY raw bash code. No markdown. No explanations."
+            content: "You are a shell script generator. Return ONLY the raw bash command. No markdown backticks. No explanation."
           },
           {
             role: "user",
             content: prompt
           }
         ],
-        // DRASTICALLY LOWER TOKENS TO PREVENT THE 402 ERROR
-        max_tokens: 200 
+        // Force the lowest possible token footprint
+        max_tokens: 100,
+        temperature: 0.1
       })
     });
 
     const data = await response.json();
 
-    if (response.status === 402) {
-      return NextResponse.json({ error: "Insufficient OpenRouter Credits" }, { status: 402 });
+    // Check if OpenRouter specifically rejected it for credits again
+    if (data.error && data.error.code === 402) {
+      return NextResponse.json({ command: "# Error: OpenRouter account needs credits even for free models. Try a different API key." });
+    }
+
+    if (!data.choices || !data.choices[0]) {
+      console.error("OpenRouter Empty Response:", data);
+      return NextResponse.json({ error: "No response from AI" }, { status: 500 });
     }
 
     let command = data.choices[0].message.content.trim();
+    
+    // Clean up any accidental markdown backticks
     command = command.replace(/^```(bash|sh)?\n?/i, '').replace(/```$/i, '').trim();
 
     return NextResponse.json({ command });
 
   } catch (error) {
-    return NextResponse.json({ error: "Execution failed" }, { status: 500 });
+    console.error("Critical API Failure:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
+  
