@@ -4,10 +4,10 @@ import AppShell from '@/components/AppShell';
 
 export const metadata = {
   title: "ShellSignal — Terminal-Style Dev Dashboard & AI Brief",
-  metadataBase: new URL('https://shellsignal.vercel.app'),
+  metadataBase: new URL('https://shellsignal.brgt.site'),
   description: "A sharp, terminal-style dashboard for senior developers. Real-time HN/GitHub trends and AI-powered technical takeaways.",
   alternates: {
-    canonical: '/', 
+    canonical: 'https://shellsignal.brgt.site', 
   },
   openGraph: {
     title: "ShellSignal",
