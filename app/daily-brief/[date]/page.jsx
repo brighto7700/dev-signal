@@ -18,7 +18,7 @@ export async function generateMetadata({ params }) {
       description: `Daily executive summary for developers.`,
       url: `https://shellsignal.vercel.app/daily-brief/${date}`,
       type: "article",
-      publishedTime: date,
+      publishedTime: `${date}T08:00:00+01:00`,
       authors: ["Bright Emmanuel"],
       images: [`/daily-brief/${date}/opengraph-image`], 
     },
@@ -43,13 +43,19 @@ export default async function DailyBriefPage({ params }) {
 
   const stories = brief.top_stories || [];
 
-  // 2. The Heavyweight E-E-A-T Schema
+  // Create a strict ISO datetime string (8:00 AM WAT) to clear Google warnings
+  const isoDate = `${date}T08:00:00+01:00`;
+
+  // 2. The Heavyweight E-E-A-T Schema (Zero Warnings)
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "TechArticle",
     "headline": `ShellSignal Dev Brief: ${date}`,
-    "datePublished": date,
-    "dateModified": date,
+    "image": [
+      "https://shellsignal.vercel.app/og-main.png" 
+    ],
+    "datePublished": isoDate, 
+    "dateModified": isoDate,  
     "url": `https://shellsignal.vercel.app/daily-brief/${date}`,
     "description": `Top developer stories and AI summary for ${date}.`,
     "author": {
@@ -69,7 +75,7 @@ export default async function DailyBriefPage({ params }) {
       "name": "ShellSignal",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://shellsignal.vercel.app/og-main.png" // Fallback if dynamic OG fails
+        "url": "https://shellsignal.vercel.app/og-main.png"
       }
     }
   };
@@ -139,5 +145,4 @@ export default async function DailyBriefPage({ params }) {
       </main>
     </>
   );
-    }
-                
+                                                      }
