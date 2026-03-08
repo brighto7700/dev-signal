@@ -24,6 +24,10 @@ export const metadata = {
   alternates: {
     canonical: 'https://shellsignal.brgt.site', // CORRECTED
   },
+  icons: {
+    icon: '/icon.svg', // This points to public/icon.svg or app/icon.svg
+    apple: '/icon.svg', 
+  },
   openGraph: {
     title: "ShellSignal",
     description: "The technical signal in the noise. Terminal-style dev dashboard.",
