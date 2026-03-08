@@ -1,26 +1,32 @@
-import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import StoryCard from "@/components/StoryCard";
 
+// 1. Metadata: Forces Google to show "Shell Signal" instead of the double URL
 export const metadata = {
   title: "Shell Signal — Terminal-Style Dev Dashboard",
   description: "Real-time developer news, AI-curated briefs, and technical signals. Built for the next billion engineers.",
   openGraph: {
-    siteName: "Shell Signal", // 🔥 Forces Google to show the brand name, not the URL
+    siteName: "Shell Signal", // 🔥 Fixes the Google Search Brand Label
   },
 };
 
 export default async function HomePage() {
-  // 2. Server-Side Fetching: This is faster than useEffect and better for SEO
-  const { data: stories } = await supabase
-    .from("stories")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(15);
+  // 2. Server-Side Fetching: Respects your original /api/stories logic
+  // We use the absolute URL to ensure the server can reach itself during the build
+  let stories = [];
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'https://shellsignal.brgt.site'}/api/stories`, {
+      next: { revalidate: 60 } // Cache for 1 minute for elite performance
+    });
+    const data = await res.json();
+    stories = data.stories || [];
+  } catch (error) {
+    console.error("Signal Fetch Failed:", error);
+  }
 
   const today = new Date().toISOString().split("T")[0];
 
-  // 3. WebSite Schema: The "Identity Card" to fix the double URL display
+  // 3. WebSite Schema: The ID card to fix the search results snippet
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -65,8 +71,8 @@ export default async function HomePage() {
       <div className="section-title">TOP STORIES</div>
 
       <div className="stories-container">
-        {stories && stories.length > 0 ? (
-          stories.map((story) => (
+        {stories.length > 0 ? (
+          stories.slice(0, 15).map((story) => (
             <StoryCard key={story.id} story={story} />
           ))
         ) : (
@@ -77,4 +83,4 @@ export default async function HomePage() {
       </div>
     </>
   );
-                }
+}
