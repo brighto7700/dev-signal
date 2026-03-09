@@ -3,6 +3,9 @@ import Script from 'next/script';
 import AppShell from '@/components/AppShell';
 import { JetBrains_Mono, Rajdhani } from 'next/font/google';
 
+/** * Font Optimization: Using next/font to prevent layout shift 
+ * and eliminate external network requests.
+ */
 const mono = JetBrains_Mono({
   subsets: ['latin'],
   display: 'swap',
@@ -22,6 +25,10 @@ export const metadata = {
   description: "Real-time developer news, AI-curated briefs, and technical signals.",
   alternates: {
     canonical: 'https://shellsignal.brgt.site',
+    // 🔥 RSS Auto-Discovery: Tells browsers and readers that a feed exists!
+    types: {
+      'application/rss+xml': 'https://shellsignal.brgt.site/feed.xml', 
+    },
   },
   openGraph: {
     title: "Shell Signal",
@@ -35,6 +42,64 @@ export const metadata = {
     icon: [
       { url: '/icon.svg', type: 'image/svg+xml' },
       { url: '/icon.png', sizes: '32x32', type: 'image/png' },
+    ],
+    shortcut: '/icon.png',
+    apple: '/apple-icon.png',
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Shell Signal",
+    creator: "@brighto7700",
+    images: ["https://shellsignal.brgt.site/og-main.png"],
+  },
+};
+
+export default function RootLayout({ children }) {
+  // Advanced Sitelinks Searchbox Schema 
+  const jsonLd = {
+    "@context": "https://schema.org/",
+    "@type": "WebSite",
+    "name": "ShellSignal",
+    "url": "https://shellsignal.brgt.site",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://shellsignal.brgt.site/daily-brief?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Bright Emmanuel",
+      "url": "https://brgt.site"
+    }
+  };
+
+  return (
+    <html lang="en" className={`${mono.variable} ${sans.variable}`}>
+      <head>
+        {/* Google Analytics: Lazy loaded for performance optimization */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-1RKZ4EN7EM"
+          strategy="lazyOnload"
+        />
+        <Script id="google-analytics" strategy="lazyOnload">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-1RKZ4EN7EM');
+          `}
+        </Script>
+      </head>
+      <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <AppShell>{children}</AppShell>
+      </body>
+    </html>
+  );
+    }      { url: '/icon.png', sizes: '32x32', type: 'image/png' },
     ],
     shortcut: '/icon.png',
     apple: '/apple-icon.png',
