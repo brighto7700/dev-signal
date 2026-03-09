@@ -7,16 +7,18 @@ export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
 export default async function Image({ params }) {
-  const { date } = params;
+  // 🚨 1. NEXT.JS BUG FIX: Await the params object!
+  const resolvedParams = await params;
+  const { date } = resolvedParams;
 
-  // 1. Fetch from Supabase
+  // 2. Fetch from Supabase
   const { data, error } = await supabase
     .from('daily_briefs')
     .select('summary')
     .eq('date', date)
     .single();
 
-  // 2. Fallback text if data is missing or database connection fails
+  // 3. Fallback text 
   const displaySummary = data?.summary 
     ? data.summary.substring(0, 180) + "..." 
     : "Daily technical takeaways for senior developers. Real-time signal from HN & GitHub.";
@@ -24,23 +26,25 @@ export default async function Image({ params }) {
   return new ImageResponse(
     (
       <div style={{
-        background: '#0a0a0a',
+        background: '#0b0d11', // Matches your exact terminal background
         width: '100%',
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
         padding: '60px',
-        border: '10px solid #00ff41',
-        fontFamily: 'monospace',
+        border: '8px solid #39d98a', // Matches your green prompt
+        // Removed fontFamily: 'monospace' for now to prevent Satori from crashing
       }}>
-        <div style={{ fontSize: 40, color: '#00ff41', marginBottom: 30, letterSpacing: '2px' }}>
-          SHELL/SIGNAL // {date}
+        <div style={{ fontSize: 40, color: '#39d98a', marginBottom: 30, letterSpacing: '2px', display: 'flex' }}>
+          {`> SHELL_SIGNAL // ${date}`}
         </div>
-        <div style={{ fontSize: 54, color: 'white', lineHeight: 1.4, display: 'flex' }}>
+        
+        <div style={{ fontSize: 54, color: '#f8f8f2', lineHeight: 1.4, display: 'flex' }}>
           {displaySummary}
         </div>
-        <div style={{ position: 'absolute', bottom: 40, right: 60, fontSize: 24, color: '#444' }}>
-          shellsignal.vercel.app
+        
+        <div style={{ position: 'absolute', bottom: 40, right: 60, fontSize: 24, color: '#f0a023', display: 'flex' }}>
+          https://shellsignal.brgt.site
         </div>
       </div>
     ),
