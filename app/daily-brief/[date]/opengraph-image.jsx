@@ -7,23 +7,23 @@ export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
 export default async function Image({ params }) {
-  // 1. Await params for Next.js 15 compatibility
+  // Await params for Next.js 15 compatibility
   const resolvedParams = await params;
   const { date } = resolvedParams;
 
-  // 2. Fetch the actual JetBrains Mono font file as an ArrayBuffer
+  // Fetch the actual JetBrains Mono font file as an ArrayBuffer
   const fontData = await fetch(
     new URL('https://cdn.jsdelivr.net/fontsource/fonts/jetbrains-mono@latest/latin-400-normal.ttf')
   ).then((res) => res.arrayBuffer());
 
-  // 3. Fetch from Supabase
+  // Fetch from Supabase
   const { data, error } = await supabase
     .from('daily_briefs')
     .select('summary')
     .eq('date', date)
     .single();
 
-  // 4. Fallback text
+  // Fallback text
   const displaySummary = data?.summary 
     ? data.summary.substring(0, 180) + "..." 
     : "Daily technical takeaways for senior developers. Real-time signal from HN & GitHub.";
@@ -38,7 +38,7 @@ export default async function Image({ params }) {
         flexDirection: 'column',
         padding: '60px',
         border: '12px solid #39d98a',
-        fontFamily: '"JetBrains Mono"', // 🔥 Now this will actually work!
+        fontFamily: '"JetBrains Mono"', 
       }}>
         {/* Terminal Header */}
         <div style={{ display: 'flex', fontSize: 40, color: '#39d98a', marginBottom: 40, letterSpacing: '2px' }}>
@@ -66,7 +66,6 @@ export default async function Image({ params }) {
     ),
     { 
       ...size,
-      // 5. Inject the font into Satori's engine
       fonts: [
         {
           name: 'JetBrains Mono',
@@ -76,21 +75,5 @@ export default async function Image({ params }) {
         },
       ],
     }
-  );
-          }      }}>
-        <div style={{ fontSize: 40, color: '#39d98a', marginBottom: 30, letterSpacing: '2px', display: 'flex' }}>
-          {`> SHELL_SIGNAL // ${date}`}
-        </div>
-        
-        <div style={{ fontSize: 54, color: '#f8f8f2', lineHeight: 1.4, display: 'flex' }}>
-          {displaySummary}
-        </div>
-        
-        <div style={{ position: 'absolute', bottom: 40, right: 60, fontSize: 24, color: '#f0a023', display: 'flex' }}>
-          https://shellsignal.brgt.site
-        </div>
-      </div>
-    ),
-    { ...size }
   );
 }
