@@ -2,6 +2,7 @@ import { getTopStories } from "@/lib/hackernews";
 import { enrichWithGitHub } from "@/lib/github";
 import { summarizeWithAI } from "@/lib/ai";
 import { supabaseAdmin } from "@/lib/supabase";
+import { publishToHashnode } from "@/lib/hashnode"; // 1. Import the utility
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +28,6 @@ export async function GET(request) {
     const enriched = await enrichWithGitHub(stories);
 
     console.log("Generating AI summary...");
-    // THE FIX: We MUST pass the raw 'enriched' array here so ai.js knows it's the Daily Brief
     const summary = await summarizeWithAI(enriched);
 
     if (!summary) throw new Error("AI returned a null summary.");
@@ -43,9 +43,14 @@ export async function GET(request) {
 
     if (insertError) throw insertError;
 
+    // 2. THE SYNDICATION STEP
+    // We do this AFTER the save to ensure we don't post half-baked or failed data.
+    console.log("Syndicating to Hashnode...");
+    await publishToHashnode(`Shell Signal :: ${today}`, summary);
+
     return Response.json({ success: true, date: today });
   } catch (err) {
     console.error("Cron Job Failed:", err.message);
     return Response.json({ error: err.message }, { status: 500 });
   }
-}
+        }
