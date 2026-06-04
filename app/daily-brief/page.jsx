@@ -21,7 +21,7 @@ export default async function DailyBriefIndexPage({ searchParams }) {
     .from("daily_briefs")
     .select("date, summary")
     .order("date", { ascending: false })
-    .limit(30);
+    .limit(50);
 
   if (query) {
     dbQuery = dbQuery.ilike('summary', `%${query}%`);
